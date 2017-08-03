@@ -30,7 +30,32 @@ import com.jdbc.mytools.MyJDBCTools;
  */
 public class JDBCDao {
 	
-	public void update(String sql, Object... args) {}
+	/**
+	 * 使用可变参数对SQL进行更新。
+	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
+	 */
+	public void update(String sql, Object... args) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		
+		try {
+			connection = CommonJDBC.getConnectionV1();
+			ps = connection.prepareStatement(sql);
+			
+			for (int i = 0; i < args.length; i++) {
+				ps.setObject(i + 1, args[i]);	//遍历args占位符数组，为每个占位符赋值，占位符位置初始值为1
+			}
+			
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(ps, connection);
+		}
+	}
 	
 	public void write() {}
 	
