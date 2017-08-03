@@ -24,7 +24,7 @@ import com.jdbc.mytools.MyJDBCTools;
 public class CommonJDBC {
 
 	/**
-	 * 对最基础的Connection进行测试，使用4个参数通过反射可以成功创建一个Connecting对象。
+	 * 对最基础的Connection进行测试，使用4个参数通过反射可以成功创建一个Connection对象。
 	 */
 	@Test
 	public void testConnection() {
@@ -54,7 +54,7 @@ public class CommonJDBC {
 	 * 使用外置的properties文件对数据库信息进行配置，通过输入流对其进行读取获取参数，
 	 * 最终获得Connection。
 	 * 在测试成功之后，我们将获取Connection抽取为一个方法{@code getConnectionV1}，
-	 * 在之后的其它测试中均使用此方法代替初始的获取Connection方法。
+	 * 在之后的其它测试中均使用此方法代替初始获取Connection的方法。
 	 */
 	@Test
 	public void testConnectionWithProperties() {
@@ -91,7 +91,49 @@ public class CommonJDBC {
 			MyJDBCTools.releaseDB(connection);
 		}
 	}
+	
+	/**
+	 * 根据之前获取Connection的方法抽取出的一个工具类，但是仅仅只是第一个版本，
+	 * 随着后面学习新的知识例如数据库连接池等，会对其进行不断地迭代更新。
+	 * 
+	 * @return 一个Connection
+	 * @version 1.0
+	 * 
+	 */
+	public Connection getConnectionV1() {
 
+		String username = null;
+		String password = null;
+		String jdbcUrl = null;
+		String driverClass = null;
+
+		Properties properties = new Properties();
+
+		InputStream inStream = CommonJDBC.class
+				.getClassLoader()
+				.getResourceAsStream("jdbc.properties");
+
+		Connection connection = null;
+
+		try {
+			properties.load(inStream);
+
+			username = properties.getProperty("username");
+			password = properties.getProperty("password");
+			jdbcUrl = properties.getProperty("jdbcUrl");
+			driverClass = properties.getProperty("driverClass");
+
+			Class.forName(driverClass);
+
+			connection = DriverManager
+					.getConnection(jdbcUrl, username, password);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return connection;
+	}
+	
 	/**
 	 * 测试Statement，Statement的作用是执行SQL语句以及获得查询 & 修改结果，
 	 * 我们会在下一个例子中提到。
@@ -126,8 +168,9 @@ public class CommonJDBC {
 	/**
 	 * PreparedStatement从字面意思就能看出来，它在执行SQL语句时会先传入SQL语句并预先编译，
 	 * 跟Statement相比，它除了可以预先编译，在多次执行SQL语句时提高效率，而且它可以有效防止SQL注入。
-	 * 详细信息可以参见{@code testSQLinjection}
-	 * 当PreparedStatement执行修改操作时，其返回值是一个int型变量，此时不会产生结果集。
+	 * 详细信息可以参见{@code testSQLInjection}
+	 * 当PreparedStatement执行修改操作时(调用{@code PreparedStatement #excuteUpdate()})，
+	 * 其返回值是一个int型变量，此时不会产生结果集。
 	 */
 	@Test
 	public void testPreparedStatement() {
@@ -260,8 +303,8 @@ public class CommonJDBC {
 				String bestSong = rs.getString(3);
 				
 				System.out.println("id: " + id + 
-								   ", name: " + name + 
-								   ", bestSong: " + bestSong);
+						", name: " + name + 
+						", bestSong: " + bestSong);
 			}
 			
 		} catch (Exception e) {
@@ -272,7 +315,7 @@ public class CommonJDBC {
 	}
 	
 	/**
-	 * ResultSet返回查询结果集的元数据，也就是每个字段的名称或者别名，
+	 * ResultSetMetaData 返回查询结果集的元数据，也就是每个字段的名称或者别名，
 	 * 可以通过相关方法得出每个字段的名称或者别名。
 	 */
 	@Test
@@ -310,45 +353,4 @@ public class CommonJDBC {
 		}
 	}
 
-	/**
-	 * 根据之前获取Connection的方法抽取出的一个工具类，但是仅仅只是第一个版本，
-	 * 随着后面学习新的知识例如数据库连接池等，会对其进行不断地迭代更新。
-	 * 
-	 * @return 一个Connection
-	 * @version 1.0
-	 * 
-	 */
-	public Connection getConnectionV1() {
-
-		String username = null;
-		String password = null;
-		String jdbcUrl = null;
-		String driverClass = null;
-
-		Properties properties = new Properties();
-
-		InputStream inStream = CommonJDBC.class
-				.getClassLoader()
-				.getResourceAsStream("jdbc.properties");
-
-		Connection connection = null;
-
-		try {
-			properties.load(inStream);
-
-			username = properties.getProperty("username");
-			password = properties.getProperty("password");
-			jdbcUrl = properties.getProperty("jdbcUrl");
-			driverClass = properties.getProperty("driverClass");
-
-			Class.forName(driverClass);
-
-			connection = DriverManager
-					.getConnection(jdbcUrl, username, password);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-		return connection;
-	}
 }
