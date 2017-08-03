@@ -57,7 +57,21 @@ public class JDBCDao {
 		}
 	}
 	
-	public void write() {}
+	/**
+	 * 向数据库中写入对象，其内部实现是调用singer的get方法获取到其属性，之后调用update方法将属性放入SQL语句中
+	 * 并最终将该对象存放入数据库。
+	 * 
+	 * @param singer 传入的Singer对象
+	 */
+	public void write(Singer singer) {
+		if(singer == null) {
+			throw new NullPointerException("Singer对象不能为空！");
+		}
+		String sql = "INSERT INTO singer(id, name, bestsong) "
+					+ "VALUES(?, ?, ?)";
+		update(sql, singer.getName(), singer.getBestSong());
+		
+	}
 	
 	@Deprecated
 	public void getByConstructor() {}
