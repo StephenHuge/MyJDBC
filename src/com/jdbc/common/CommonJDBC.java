@@ -100,7 +100,7 @@ public class CommonJDBC {
 	 * @version 1.0
 	 * 
 	 */
-	public Connection getConnectionV1() {
+	public static Connection getConnectionV1() {
 
 		String username = null;
 		String password = null;
