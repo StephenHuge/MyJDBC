@@ -2,6 +2,7 @@ package com.jdbc.common;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.jdbc.mytools.MyJDBCTools;
 
@@ -35,7 +36,7 @@ public class JDBCDao {
 	 * @param sql 一般是带占位符的SQL语句
 	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
 	 */
-	public void update(String sql, Object... args) {
+	public static void update(String sql, Object... args) {
 		
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -63,25 +64,70 @@ public class JDBCDao {
 	 * 
 	 * @param singer 传入的Singer对象
 	 */
-	public void write(Singer singer) {
+	public static void write(Singer singer) {
 		if(singer == null) {
 			throw new NullPointerException("Singer对象不能为空！");
 		}
-		String sql = "INSERT INTO singer(id, name, bestsong) "
-					+ "VALUES(?, ?, ?)";
+		String sql = "INSERT INTO singer(name, bestsong) "
+					+ "VALUES(?, ?)";
 		update(sql, singer.getName(), singer.getBestSong());
 		
 	}
 	
+	/**
+	 * 从数据库读取数据并创建对象，有两种方法
+	 * 1） 构造函数创建
+	 * 2）反射创建：原因是为了抽取共性，代码能够复用
+	 * 
+	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
+	 * @return 返回获取的对象，在此处为Singer对象
+	 */
 	@Deprecated
-	public void getByConstructor() {}
+	public static Object getByConstructor(String sql, Object... args) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			connection = CommonJDBC.getConnectionV1();
+			ps = connection.prepareStatement(sql);
+			
+			for (int i = 0; i < args.length; i++) {
+				ps.setObject(i + 1, args[i]);
+			}
+			
+			rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				int id = rs.getInt(1);
+				String name = rs.getString(2);
+				String bestSong = rs.getString(3);
+				
+				return new Singer(id, name, bestSong);
+			}
+			return null;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(rs, ps, connection);
+		}
+		
+				
+		
+		return null;
+	}
 	
 	@Deprecated
-	public void getByReflection() {}
+	public static Object getByReflection() {
+		return null;
+	}
 	
-	public void getByReflectionWithList() {}
+	public static void getByReflectionWithList() {}
 	
-	public void getForList() {}
+	public static void getForList() {}
 
-	public void getForField() {}
+	public static void getForField() {}
 }

@@ -1,6 +1,7 @@
 package com.jdbc.common;
 
 public class Singer {
+
 	private int id;
 	private String name;
 	private String bestSong;
@@ -15,6 +16,12 @@ public class Singer {
 		this.bestSong = bestSong;
 	}
 
+	public Singer(int id, String name, String bestSong) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.bestSong = bestSong;
+	}
 
 	public int getId() {
 		return id;
