@@ -2,6 +2,8 @@ package com.jdbc.common;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +44,11 @@ public class JDBCDaoTest {
 
 	@Test
 	public void testGetByReflection() {
-		fail("Not yet implemented");
+		String sql = "SELECT id, name, bestsong bestSong"
+				+ "	FROM singer";
+		List<Singer> singers = JDBCDao.getForList(Singer.class, sql);
+		
+		System.out.println(singers);
 	}
 
 	@Test

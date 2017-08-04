@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -127,11 +129,16 @@ public class JDBCDao {
 	}
 	
 	/**
-	 * 通过反射从数据库中获取对象属性，被@Deprecated修饰是因为我们在后面会对它进行重构，重构中有更好的实现。
+	 * 通过反射从数据库中获取对象属性，具体实现是：
+	 * 	（1） 读取rsmd，通过rsmd中的值获取rs中相对应的值，将键值对存入一个HashMap；
+	 *  （2）遍历HshMap，通过反射将读取的值赋值到对象中，其中使用了工具类{@code BeanUtils}。
+	 *  
+	 * 被@Deprecated修饰是因为我们在后面会对它进行重构，重构中有更好的实现。
+	 * 
 	 * @param clazz 需要创建类的类型
 	 * @param sql 一般是带占位符的SQL语句
 	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
-	 * @return
+	 * @return 一个传入类型的实例
 	 */
 	@Deprecated
 	public static <T> T getByReflectionWithoutList(Class<T> clazz, String sql, Object... args) {
@@ -184,7 +191,62 @@ public class JDBCDao {
 	
 	public static void getByReflection() {}
 	
-	public static void getForList() {}
+	/**
+	 * 将数据库中的多条记录转为多个对象，并使用一个装着多个不同类实例的List返回。其实现是复杂版的
+	 * {@code getByReflectionWithoutList()}。
+	 * @param clazz 需要创建类的类型
+	 * @param sql 一般是带占位符的SQL语句
+	 * @return 一个装着多个传入类的不同实例的List
+	 */
+	public static <T> List<T> getForList(Class<T> clazz, String sql) {
+		List<T> list = null;
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			connection = CommonJDBC.getConnectionV1();
+			ps = connection.prepareStatement(sql);
+			
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<>();
+			}
+			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			while(rs.next()) {
+				Map<String, Object> map = new HashMap<>();
+				
+				for (int j = 0; j < rsmd.getColumnCount(); j++) {
+					String label = rsmd.getColumnLabel(j + 1);
+					Object value = rs.getObject(label);
+
+					map.put(label, value);
+				}
+				
+				T instance = null;
+				if (map.size() > 0) {
+					instance = clazz.newInstance();
+					for (Map.Entry<String, Object> entry : map.entrySet()) {
+						String key = entry.getKey();
+						Object val = entry.getValue();
+						
+						BeanUtils.setProperty(instance, key, val);
+					}
+				}
+				
+				list.add(instance);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(rs, ps, connection);
+		}
+		return list;
+	}
 
 	public static void getForField() {}
 }
