@@ -32,12 +32,16 @@ public class JDBCDaoTest {
 	}
 
 	@Test
-	public void testGetByReflection() {
-		fail("Not yet implemented");
+	public void testGetByReflectionWithoutList() {
+		String sql = "SELECT id, name, bestsong bestSong"
+				+ "	FROM singer WHERE bestsong = ?";
+		Singer singer = JDBCDao.getByReflectionWithoutList(Singer.class, sql, "美人鱼");
+		
+		System.out.println(singer);
 	}
 
 	@Test
-	public void testGetByReflectionWithList() {
+	public void testGetByReflection() {
 		fail("Not yet implemented");
 	}
 

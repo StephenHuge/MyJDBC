@@ -3,6 +3,12 @@ package com.jdbc.common;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.dbutils.DbUtils;
 
 import com.jdbc.mytools.MyJDBCTools;
 
@@ -120,12 +126,63 @@ public class JDBCDao {
 		return null;
 	}
 	
+	/**
+	 * 通过反射从数据库中获取对象属性，被@Deprecated修饰是因为我们在后面会对它进行重构，重构中有更好的实现。
+	 * @param clazz 需要创建类的类型
+	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
+	 * @return
+	 */
 	@Deprecated
-	public static Object getByReflection() {
-		return null;
+	public static <T> T getByReflectionWithoutList(Class<T> clazz, String sql, Object... args) {
+		
+		T entity = null;
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			connection = CommonJDBC.getConnectionV1();
+			ps = connection.prepareStatement(sql);
+			
+			for (int i = 0; i < args.length; i++) {
+				ps.setObject(i + 1, args[i]);
+			}
+			
+			rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			Map<String, Object> map = new HashMap<>();
+			
+			if(rs.next()) {
+				for (int j = 0; j < rsmd.getColumnCount(); j++) {
+					String label = rsmd.getColumnLabel(j + 1);
+					Object value = rs.getObject(label);
+
+					map.put(label, value);
+				}
+			}
+			
+			if (map.size() > 0) {
+				entity = clazz.newInstance();
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					String key = entry.getKey();
+					Object val = entry.getValue();
+					
+					BeanUtils.setProperty(entity, key, val);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(rs, ps, connection);
+		}
+		
+		return entity;
 	}
 	
-	public static void getByReflectionWithList() {}
+	public static void getByReflection() {}
 	
 	public static void getForList() {}
 
