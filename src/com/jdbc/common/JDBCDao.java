@@ -1,9 +1,11 @@
 package com.jdbc.common;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,7 +217,6 @@ public class JDBCDao {
 	 * @return 一个装着多个传入类的不同实例的List
 	 */
 	public static <T> List<T> getForList(Class<T> clazz, String sql, Object... args) {
-		List<T> list = null;
 
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -231,33 +232,7 @@ public class JDBCDao {
 			
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				list = new ArrayList<>();
-			}
-
-			ResultSetMetaData rsmd = rs.getMetaData();
-
-			while(rs.next()) {
-				Map<String, Object> map = new HashMap<>();
-
-				for (int j = 0; j < rsmd.getColumnCount(); j++) {
-					String label = rsmd.getColumnLabel(j + 1);
-					Object value = rs.getObject(label);
-
-					map.put(label, value);
-				}
-
-				T instance = null;
-				if (map.size() > 0) {
-					instance = clazz.newInstance();
-					for (Map.Entry<String, Object> entry : map.entrySet()) {
-						String key = entry.getKey();
-						Object val = entry.getValue();
-
-						BeanUtils.setProperty(instance, key, val);
-					}
-				}
-
-				list.add(instance);
+				return  transferResultSetToBeanList(clazz, rs);
 			}
 
 		} catch (Exception e) {
@@ -265,6 +240,48 @@ public class JDBCDao {
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
+		return null;
+	}
+
+	/**
+	 * 从getForList()方法中抽取出来的方法，传入一个Class<T>类型的参数和一个ResultSet类型的参数，通过反射生成
+	 * 一个装着多个不同类实例的List。
+	 * 
+	 * @param clazz 需要创建类的类型
+	 * @param rs 一个结果集
+	 * @return 一个装着多个传入类的不同实例的List
+	 * @throws Exception 当方法执行出错时，会抛出异常
+	 */
+	private static <T> List<T> transferResultSetToBeanList(Class<T> clazz, ResultSet rs)
+			throws Exception {
+		
+		ResultSetMetaData rsmd = rs.getMetaData();
+		List<T> list = new ArrayList<>();
+		
+		 do {
+			Map<String, Object> map = new HashMap<>();
+
+			for (int j = 0; j < rsmd.getColumnCount(); j++) {
+				String label = rsmd.getColumnLabel(j + 1);
+				Object value = rs.getObject(label);
+
+				map.put(label, value);
+			}
+
+			T instance = null;
+			if (map.size() > 0) {
+				instance = clazz.newInstance();
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					String key = entry.getKey();
+					Object val = entry.getValue();
+
+					BeanUtils.setProperty(instance, key, val);
+				}
+			}
+
+			list.add(instance);
+		} while(rs.next());
+		 
 		return list;
 	}
 
