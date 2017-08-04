@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.dbutils.DbUtils;
 
 import com.jdbc.mytools.MyJDBCTools;
 
@@ -38,34 +37,34 @@ import com.jdbc.mytools.MyJDBCTools;
  * @date 2017年8月3日 下午10:27:47
  */
 public class JDBCDao {
-	
+
 	/**
 	 * 使用可变参数对SQL进行更新。
 	 * @param sql 一般是带占位符的SQL语句
 	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
 	 */
 	public static void update(String sql, Object... args) {
-		
+
 		Connection connection = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			connection = CommonJDBC.getConnectionV1();
 			ps = connection.prepareStatement(sql);
-			
+
 			for (int i = 0; i < args.length; i++) {
 				ps.setObject(i + 1, args[i]);	//遍历args占位符数组，为每个占位符赋值，占位符位置初始值为1
 			}
-			
+
 			ps.executeUpdate();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			MyJDBCTools.releaseDB(ps, connection);
 		}
 	}
-	
+
 	/**
 	 * 向数据库中写入对象，其内部实现是调用singer的get方法获取到其属性，之后调用update方法将属性放入SQL语句中
 	 * 并最终将该对象存放入数据库。
@@ -77,11 +76,11 @@ public class JDBCDao {
 			throw new NullPointerException("Singer对象不能为空！");
 		}
 		String sql = "INSERT INTO singer(name, bestsong) "
-					+ "VALUES(?, ?)";
+				+ "VALUES(?, ?)";
 		update(sql, singer.getName(), singer.getBestSong());
-		
+
 	}
-	
+
 	/**
 	 * 从数据库读取数据并创建对象，有两种方法
 	 * 1） 构造函数创建
@@ -93,41 +92,41 @@ public class JDBCDao {
 	 */
 	@Deprecated
 	public static Object getByConstructor(String sql, Object... args) {
-		
+
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
 			connection = CommonJDBC.getConnectionV1();
 			ps = connection.prepareStatement(sql);
-			
+
 			for (int i = 0; i < args.length; i++) {
 				ps.setObject(i + 1, args[i]);
 			}
-			
+
 			rs = ps.executeQuery();
-			
+
 			if(rs.next()) {
 				int id = rs.getInt(1);
 				String name = rs.getString(2);
 				String bestSong = rs.getString(3);
-				
+
 				return new Singer(id, name, bestSong);
 			}
 			return null;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-		
-				
-		
+
+
+
 		return null;
 	}
-	
+
 	/**
 	 * 通过反射从数据库中获取对象属性，具体实现是：
 	 * 	（1） 读取rsmd，通过rsmd中的值获取rs中相对应的值，将键值对存入一个HashMap；
@@ -142,26 +141,26 @@ public class JDBCDao {
 	 */
 	@Deprecated
 	public static <T> T getByReflectionWithoutList(Class<T> clazz, String sql, Object... args) {
-		
+
 		T entity = null;
-		
+
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
 			connection = CommonJDBC.getConnectionV1();
 			ps = connection.prepareStatement(sql);
-			
+
 			for (int i = 0; i < args.length; i++) {
 				ps.setObject(i + 1, args[i]);
 			}
-			
+
 			rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
-			
+
 			Map<String, Object> map = new HashMap<>();
-			
+
 			if(rs.next()) {
 				for (int j = 0; j < rsmd.getColumnCount(); j++) {
 					String label = rsmd.getColumnLabel(j + 1);
@@ -170,13 +169,13 @@ public class JDBCDao {
 					map.put(label, value);
 				}
 			}
-			
+
 			if (map.size() > 0) {
 				entity = clazz.newInstance();
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
 					String key = entry.getKey();
 					Object val = entry.getValue();
-					
+
 					BeanUtils.setProperty(entity, key, val);
 				}
 			}
@@ -185,12 +184,12 @@ public class JDBCDao {
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-		
+
 		return entity;
 	}
-	
+
 	public static void getByReflection() {}
-	
+
 	/**
 	 * 将数据库中的多条记录转为多个对象，并使用一个装着多个不同类实例的List返回。其实现是复杂版的
 	 * {@code getByReflectionWithoutList()}。
@@ -200,46 +199,46 @@ public class JDBCDao {
 	 */
 	public static <T> List<T> getForList(Class<T> clazz, String sql) {
 		List<T> list = null;
-		
+
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
 			connection = CommonJDBC.getConnectionV1();
 			ps = connection.prepareStatement(sql);
-			
+
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				list = new ArrayList<>();
 			}
-			
+
 			ResultSetMetaData rsmd = rs.getMetaData();
-			
+
 			while(rs.next()) {
 				Map<String, Object> map = new HashMap<>();
-				
+
 				for (int j = 0; j < rsmd.getColumnCount(); j++) {
 					String label = rsmd.getColumnLabel(j + 1);
 					Object value = rs.getObject(label);
 
 					map.put(label, value);
 				}
-				
+
 				T instance = null;
 				if (map.size() > 0) {
 					instance = clazz.newInstance();
 					for (Map.Entry<String, Object> entry : map.entrySet()) {
 						String key = entry.getKey();
 						Object val = entry.getValue();
-						
+
 						BeanUtils.setProperty(instance, key, val);
 					}
 				}
-				
+
 				list.add(instance);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -248,5 +247,41 @@ public class JDBCDao {
 		return list;
 	}
 
-	public static void getForField() {}
+	/**
+	 * 返回某条记录的某一个字段的值 或 一个统计的值(一共有多少条记录等)，
+	 * 一般得到的结果集应该只有一行, 且只有一列
+	 * @param sql
+	 * @param args
+	 * @return
+	 */
+	public static <E> E getForField(String sql, Object... args) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			connection = CommonJDBC.getConnectionV1();
+			ps = connection.prepareStatement(sql);
+
+			for (int i = 0; i < args.length; i++) {
+				ps.setObject(i + 1, args[i]);
+			}
+
+			rs = ps.executeQuery();
+
+			if(rs.next()){
+				return  (E) rs.getObject(1);
+			}
+			
+		} catch(Exception e){
+			e.printStackTrace();
+		} finally{
+			MyJDBCTools.releaseDB(rs, ps, connection);
+		}
+
+		return null;
+
+
+	}
 }

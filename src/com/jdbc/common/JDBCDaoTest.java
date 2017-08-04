@@ -44,6 +44,10 @@ public class JDBCDaoTest {
 
 	@Test
 	public void testGetByReflection() {
+	}
+
+	@Test
+	public void testGetForList() {
 		String sql = "SELECT id, name, bestsong bestSong"
 				+ "	FROM singer";
 		List<Singer> singers = JDBCDao.getForList(Singer.class, sql);
@@ -52,13 +56,12 @@ public class JDBCDaoTest {
 	}
 
 	@Test
-	public void testGetForList() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testGetForField() {
-		fail("Not yet implemented");
+		String sql = "SELECT name"
+				+ "	FROM singer WHERE bestsong = ?";
+		String name = JDBCDao.getForField(sql, "美人鱼");
+		
+		System.out.println(name);
 	}
 
 }
