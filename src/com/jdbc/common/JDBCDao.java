@@ -188,16 +188,33 @@ public class JDBCDao {
 		return entity;
 	}
 
-	public static void getByReflection() {}
+	/**
+	 * 使用getByForList()进行封装。
+	 * 
+	 * @param clazz 需要创建类的类型
+	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
+	 * @return 一个装着多个传入类的不同实例的List
+	 */
+	public static <T> T getByReflection(Class<T> clazz, String sql, Object... args) {
+		
+		List<T> list = getForList(clazz, sql, args);
+		if(list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
 
 	/**
 	 * 将数据库中的多条记录转为多个对象，并使用一个装着多个不同类实例的List返回。其实现是复杂版的
 	 * {@code getByReflectionWithoutList()}。
+	 * 
 	 * @param clazz 需要创建类的类型
 	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
 	 * @return 一个装着多个传入类的不同实例的List
 	 */
-	public static <T> List<T> getForList(Class<T> clazz, String sql) {
+	public static <T> List<T> getForList(Class<T> clazz, String sql, Object... args) {
 		List<T> list = null;
 
 		Connection connection = null;
@@ -208,6 +225,10 @@ public class JDBCDao {
 			connection = CommonJDBC.getConnectionV1();
 			ps = connection.prepareStatement(sql);
 
+			for (int i = 0; i < args.length; i++) {
+				ps.setObject(i + 1, args[i]);
+			}
+			
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				list = new ArrayList<>();

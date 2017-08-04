@@ -44,13 +44,18 @@ public class JDBCDaoTest {
 
 	@Test
 	public void testGetByReflection() {
+		String sql = "SELECT id, name, bestsong bestSong"
+				+ "	FROM singer WHERE bestsong = ?";
+		Singer singer = JDBCDao.getByReflection(Singer.class, sql, "日不落");
+		
+		System.out.println(singer);
 	}
 
 	@Test
 	public void testGetForList() {
 		String sql = "SELECT id, name, bestsong bestSong"
-				+ "	FROM singer";
-		List<Singer> singers = JDBCDao.getForList(Singer.class, sql);
+				+ "	FROM singer WHERE id > ?";
+		List<Singer> singers = JDBCDao.getForList(Singer.class, sql, 1);
 		
 		System.out.println(singers);
 	}
