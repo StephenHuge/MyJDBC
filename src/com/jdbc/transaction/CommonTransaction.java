@@ -39,7 +39,7 @@ public class CommonTransaction {
 		String sql = "INSERT singer(name, bestsong) "
 					+ "VALUES(?, ?)";
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			
 			connection.setAutoCommit(NOT_AUTO_COMMIT);	// 开始事务: 取消默认提交
 			

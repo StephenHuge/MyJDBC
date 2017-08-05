@@ -49,7 +49,7 @@ public class JDBCDao {
 		PreparedStatement ps = null;
 
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {
@@ -98,7 +98,7 @@ public class JDBCDao {
 		ResultSet rs = null;
 
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {
@@ -149,7 +149,7 @@ public class JDBCDao {
 		ResultSet rs = null;
 
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {
@@ -221,7 +221,7 @@ public class JDBCDao {
 		ResultSet rs = null;
 
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {
@@ -297,7 +297,7 @@ public class JDBCDao {
 		ResultSet rs = null;
 
 		try {
-			connection = CommonJDBC.getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {

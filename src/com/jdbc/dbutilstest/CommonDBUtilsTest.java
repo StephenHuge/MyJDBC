@@ -30,10 +30,10 @@ import org.junit.Test;
  * {@code link QueryRunner #query(Connection conn, String sql, ResultSetHandler<T> rsh,Object... params)}，
  * 传入的参数就是一个 ResultSetHandle实现类，其实现类会对ResutSet对象进行读取和"加工"。
  * 
- * 由于大部分时候，对数据"加工"的方式会很固定，所以ResultSetHandle的实现类一般功能会很固定。而之前在{@code com.jdbc.common.JDBCDao}中，
- * 我们在方法{# getByReflection(Class<T>, String, Object...)}方法中，我们将ResultSet对象中的值经过反射变成了一个T类型的对象，
- * 在{# getForList(Class<T> clazz, String sql, Object... args)}方法中，将ResutSet对象经过反射变成了一个成员类型为
- * T的List对象。其实这两个方法对应的就是ResultSetHandle接口的实现类{@code BeanHandle}和{@code BeanListHandle}。
+ * 由于大部分时候，对数据"加工"的方式会很固定，所以ResultSetHandle的实现类一般功能会很固定。而之前在方法
+ * {@code com.jdbc.common.JDBCDao# getByReflection(Class<T>, String, Object...)}中，我们将ResultSet对象中的值经过
+ * 反射变成了一个T类型的对象，在{# getForList(Class<T> clazz, String sql, Object... args)}方法中，将ResutSet对象中的值经过
+ * 反射变成了一个成员类型为T的List对象。其实这两个方法对应的就是ResultSetHandle接口的实现类{@code BeanHandle}和{@code BeanListHandle}。
  * 
  * 其它的实现类还有很多，例如{@code ArrayHandler}、{@code MapHandler}以及它们对应的集合类等。
  * 

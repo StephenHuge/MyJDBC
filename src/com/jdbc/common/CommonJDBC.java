@@ -53,7 +53,7 @@ public class CommonJDBC {
 	/**
 	 * 使用外置的properties文件对数据库信息进行配置，通过输入流对其进行读取获取参数，
 	 * 最终获得Connection。
-	 * 在测试成功之后，我们将获取Connection抽取为一个方法{@code getConnectionV1}，
+	 * 在测试成功之后，我们将获取Connection抽取为一个方法{@link MyJDBCTools#getConnectionV1()}，
 	 * 在之后的其它测试中均使用此方法代替初始获取Connection的方法。
 	 */
 	@Test
@@ -92,47 +92,7 @@ public class CommonJDBC {
 		}
 	}
 	
-	/**
-	 * 根据之前获取Connection的方法抽取出的一个工具类，但是仅仅只是第一个版本，
-	 * 随着后面学习新的知识例如数据库连接池等，会对其进行不断地迭代更新。
-	 * 
-	 * @return 一个Connection
-	 * @version 1.0
-	 * 
-	 */
-	public static Connection getConnectionV1() {
-
-		String username = null;
-		String password = null;
-		String jdbcUrl = null;
-		String driverClass = null;
-
-		Properties properties = new Properties();
-
-		InputStream inStream = CommonJDBC.class
-				.getClassLoader()
-				.getResourceAsStream("jdbc.properties");
-
-		Connection connection = null;
-
-		try {
-			properties.load(inStream);
-
-			username = properties.getProperty("username");
-			password = properties.getProperty("password");
-			jdbcUrl = properties.getProperty("jdbcUrl");
-			driverClass = properties.getProperty("driverClass");
-
-			Class.forName(driverClass);
-
-			connection = DriverManager
-					.getConnection(jdbcUrl, username, password);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-		return connection;
-	}
+	
 	
 	/**
 	 * 测试Statement，Statement的作用是执行SQL语句以及获得查询 & 修改结果，
@@ -147,7 +107,7 @@ public class CommonJDBC {
 		Statement statement = null;
 
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			statement = connection.createStatement();
 
 			statement.execute(sql);
@@ -181,7 +141,7 @@ public class CommonJDBC {
 		PreparedStatement ps = null;
 
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, 1);
 
@@ -213,7 +173,7 @@ public class CommonJDBC {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			statement = connection.createStatement();
 
 			rs = statement.executeQuery(sql);
@@ -257,7 +217,7 @@ public class CommonJDBC {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, name);
 			ps.setString(2, sqlPassword);
@@ -291,7 +251,7 @@ public class CommonJDBC {
 				+ " FROM singer WHERE name = ?";
 		String sqlName = "Jay Chou";
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, sqlName);
 			
@@ -329,7 +289,7 @@ public class CommonJDBC {
 				+ " FROM singer WHERE name = ?";
 		String sqlName = "Jay Chou";
 		try {
-			connection = getConnectionV1();
+			connection = MyJDBCTools.getConnection();
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, sqlName);
 			
