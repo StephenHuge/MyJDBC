@@ -1,5 +1,6 @@
 package com.jdbc.connectionpool;
 
+import java.beans.PropertyVetoException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,6 +11,8 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 /**
  * JDBC中的两种数据库连接池实现：DBCP和C3P0 的简单测试。
  * 
@@ -19,7 +22,7 @@ import org.apache.commons.dbcp.BasicDataSourceFactory;
  */
 public class CommonConnectionPool {
 
-	
+
 	/**
 	 * DBCP的实现类是{@code BasicDataSource}。
 	 * 
@@ -27,7 +30,7 @@ public class CommonConnectionPool {
 	 */
 	public static Connection myDBCP() {
 		final BasicDataSource dataSource = new BasicDataSource();
-		
+
 		//为数据源实例指定必须的属性
 		dataSource.setUsername("root");
 		dataSource.setPassword("1234");
@@ -60,26 +63,58 @@ public class CommonConnectionPool {
 	 */
 	public static Connection myDBCPWithDataSourceFactory() {
 		DataSource dataSource = null;
-		
+
 		Properties properties = new Properties();
 		InputStream inStream = CommonConnectionPool.class
-						.getClassLoader()
-						.getResourceAsStream("dbcp.properties");
-		
+				.getClassLoader()
+				.getResourceAsStream("dbcp.properties");
+
 		try {
 			properties.load(inStream);
-			
+
 			dataSource = (DataSource) BasicDataSourceFactory.createDataSource(properties);
-			
 			return dataSource.getConnection();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+	/**
+	 * C3P0的实现类是{@code ComboPooledDataSource}。
+	 * 
+	 * @return 由C3P0数据库连接池获取得到的Connection
+	 */
 	public static Connection myC3P0() {
-		
+
+		ComboPooledDataSource cpds = new ComboPooledDataSource();
+
+		try {
+			cpds.setDriverClass( "com.mysql.jdbc.Driver" );             
+			cpds.setJdbcUrl( "jdbc:mysql:///myjdbcrewrite" );
+			cpds.setUser("root");                                  
+			cpds.setPassword("1234");
+
+			return cpds.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}   
+		return null;
+	}
+
+	/**
+	 * 通过xml文件配置C3P0数据库连接池获取Connection。
+	 * 
+	 * @return 由C3P0数据库连接池获取得到的Connection
+	 */
+	public static Connection myC3P0WithXML() {
+		ComboPooledDataSource cpds = new ComboPooledDataSource("c3p0_prop");
+
+		try {
+			return cpds.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}   
 		return null;
 	}
 }

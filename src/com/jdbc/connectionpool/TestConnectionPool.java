@@ -32,7 +32,13 @@ public class TestConnectionPool {
 
 	@Test
 	public void testMyC3P0() {
-		fail("Not yet implemented");
+		Connection connection = CommonConnectionPool.myC3P0();
+		System.out.println(connection);
 	}
-
+	
+	@Test
+	public void testMyC3P0WithXML() {
+		Connection connection = CommonConnectionPool.myC3P0WithXML();
+		System.out.println(connection);
+	}
 }
