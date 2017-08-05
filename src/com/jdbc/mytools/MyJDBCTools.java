@@ -80,7 +80,7 @@ public class MyJDBCTools {
 	 * 数据库连接池应只被初始化一次. 
 	 */
 	static{
-		dataSource = new ComboPooledDataSource("helloc3p0");
+		dataSource = new ComboPooledDataSource("c3p0_prop");
 	}
 	
 	/**
