@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 
+import com.jdbc.mytools.MyJDBCTools;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
@@ -80,7 +81,8 @@ public class CommonConnectionPool {
 		return null;
 	}
 	/**
-	 * C3P0的实现类是{@code ComboPooledDataSource}。
+	 * C3P0的实现类是{@code ComboPooledDataSource}， 我们在{@code MyJDBCTools}中获取Connection的方法
+	 * {@code MyJDBCTools#getConnectionV1()}之后由此方式重写并代替。
 	 * 
 	 * @return 由C3P0数据库连接池获取得到的Connection
 	 */
