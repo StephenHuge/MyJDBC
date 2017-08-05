@@ -2,7 +2,10 @@ package com.jdbc.dbutilstest;
 
 import java.sql.Connection;
 
+import org.apache.commons.dbutils.QueryRunner;
 import org.junit.Test;
+
+import com.jdbc.mytools.MyJDBCTools;
 
 /**
  * 其实比较常用的有{@code QueryRunner}类和{@code ResultSetHandle}接口。
@@ -44,9 +47,26 @@ import org.junit.Test;
  */
 public class CommonDBUtilsTest {
 	
+	/**
+	 * 使用QueryRunner测试数据库更新（update）操作。
+	 */
 	@Test
 	public void testQueryRunnerUpdate() {
+		Connection connection = null;
 		
+		String sql = "DELETE FROM singer WHERE id >= ?";
+		try {
+			connection = MyJDBCTools.getConnection();
+			
+			QueryRunner qr = new QueryRunner();
+			
+			qr.update(connection, sql, 9);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
 	}
 	
 	@Test
