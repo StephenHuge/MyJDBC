@@ -1,16 +1,20 @@
 package com.jdbc.dbutilstest;
 
+import java.io.IOException;
 import java.security.Signer;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.dbutils.QueryLoader;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.junit.Test;
 
 import com.jdbc.common.Singer;
@@ -185,4 +189,47 @@ public class CommonDBUtilsTest {
 
 	}
 
+	/**
+	 * 使用QueryRunner和ScalarHandle测试数据库查询（select）操作。
+	 * ScalarHandler: 可以返回指定列的一个值或返回一个统计函数的值。
+	 */
+	@Test
+	public void testQueryRunnerWithScalarHandle() {
+		Connection connection = null;
+
+		String sql = "SELECT name"
+					+ "	FROM singer WHERE id = ?";
+		try {
+			connection = MyJDBCTools.getConnection();
+
+			QueryRunner qr = new QueryRunner();
+			ResultSetHandler<Object> scalarHandle = new ScalarHandler();
+
+			Object name = qr.query(connection, sql, new ScalarHandler(), 3);
+
+			System.out.println(name);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
+	}
+	
+	/**
+	 * QueryLoader: 可以用来加载存放着 SQL 语句的资源文件.
+	 * 使用该类可以把 SQL 语句外置化到一个资源文件中. 以提供更好的解耦
+	 */
+	@Test
+	public void testQueryLoader() {
+		try {
+			Map<String, String> sqls = 
+					QueryLoader.instance().load("/sql.properties");
+			
+			String updateSql = sqls.get("UPDATE_CUSTOMER");
+			System.out.println(updateSql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
 }
