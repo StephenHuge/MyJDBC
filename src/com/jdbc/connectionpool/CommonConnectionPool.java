@@ -1,6 +1,5 @@
 package com.jdbc.connectionpool;
 
-import java.beans.PropertyVetoException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
