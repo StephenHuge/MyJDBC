@@ -275,9 +275,9 @@ public class JDBCDao {
 
 					BeanUtils.setProperty(instance, key, val);
 				}
+				list.add(instance);
 			}
 
-			list.add(instance);
 		} while(rs.next());
 		 
 		return list;
