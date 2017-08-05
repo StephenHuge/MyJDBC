@@ -22,11 +22,7 @@ import com.jdbc.mytools.MyJDBCTools;
  * @date 2017年8月5日 下午5:44:29
  */
 public class CommonTransaction {
-	
-	public static final boolean NOT_AUTO_COMMIT = false;
-	
-	public static final boolean AUTO_COMMIT = true;
-	
+
 	/**
 	 * 关于事务的一个基础测试方法。
 	 */
@@ -35,40 +31,36 @@ public class CommonTransaction {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		String sql = "INSERT singer(name, bestsong) "
-					+ "VALUES(?, ?)";
+				+ "VALUES(?, ?)";
 		try {
 			connection = MyJDBCTools.getConnection();
-			
-			connection.setAutoCommit(NOT_AUTO_COMMIT);	// 开始事务: 取消默认提交
-			
+
+			MyJDBCTools.beginTransaction(connection);	// 开始事务
+
 			ps = connection.prepareStatement(sql);
-			
+
 			ps.setObject(1, "王力宏");
 			ps.setObject(2, "我们的歌");
 			ps.execute();
-			
+
 			ps.setObject(1, "五月天");
 			ps.setObject(2, "如烟");
 			ps.execute();
-			
-			connection.commit();	// 提交事务
-			
-					
+
+			MyJDBCTools.commit(connection);// 提交事务
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
+			MyJDBCTools.rollback(connection);	// 回滚事务
 			
-			try {
-				connection.rollback();	// 回滚事务
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
 		} finally {
 			MyJDBCTools.releaseDB(ps, connection);
 		}
-				
+
 	}
-	
-	
+
+
 }
