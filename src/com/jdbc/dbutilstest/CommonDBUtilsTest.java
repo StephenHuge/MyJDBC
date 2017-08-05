@@ -10,6 +10,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.junit.Test;
 
 import com.jdbc.common.Singer;
@@ -156,7 +157,32 @@ public class CommonDBUtilsTest {
 
 	}
 
+	
+	/**
+	 * 使用QueryRunner和MapListHandle测试数据库查询（select）操作。
+	 */
 	@Test
-	public void testQueryRunnerSelectWithMapListHandle() {}
+	public void testQueryRunnerSelectWithMapListHandle() {
+		Connection connection = null;
+
+		String sql = "SELECT id, name, bestsong "
+					+ "	FROM singer";
+		try {
+			connection = MyJDBCTools.getConnection();
+
+			QueryRunner qr = new QueryRunner();
+			ResultSetHandler<List<Map<String, Object>>> beanHandle = new MapListHandler();
+
+			List<Map<String, Object>> maps = qr.query(connection, sql, beanHandle);
+
+			System.out.println(maps);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
+
+	}
 
 }
