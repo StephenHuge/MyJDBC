@@ -1,7 +1,7 @@
 这是一个学习JDBC过程中做的一些基础知识的总结，总体上有很多不足，但抱着记录所学的想法，我还是决定将它认真的做一下。  
 其中分为6个包：  
 com.jdbc.common：存储一些基础知识  
-　　其中主要的类是 [CommonJDBC.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/common/CommonJDBC.java) 和 [JDBCDao.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/common/JDBCDao.java)  包中其余的类都是一些测试类。 
+　　其中主要的类是 [CommonJDBC.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/common/CommonJDBC.java) 和 [JDBCDao.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/common/JDBCDao.java)  ，包中其余的类都是一些POJO类和测试类。 
 
 com.jdbc.extensions： 存储一些初基础之外需要掌握的知识  
 
