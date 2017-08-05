@@ -30,7 +30,7 @@ import com.jdbc.mytools.MyJDBCTools;
  * 		b. 反射创建对象。
  * 两种方法相比，第二种适用范围更广，所以第一种方法被@Deprecated 修饰，仅供参考。
  * 4. 查询多条记录的getForList方法（是get方法的超集）；
- * 5. 查询一条记录中某个属性的getForField方法（是get方法的子集）。
+ * 5. 查询一条记录中某个属性的getForField方法。
  * 
  * @author Administrator
  * 
