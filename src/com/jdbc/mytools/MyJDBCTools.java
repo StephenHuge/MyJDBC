@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -30,8 +31,61 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * 
  * @date 2017年8月6日 上午12:08:29
  */
+/**
+ * 
+ * @author Administrator
+ * 
+ * @date 2017年8月6日 上午1:22:00
+ */
 public class MyJDBCTools {
-	
+
+	public static final boolean NOT_AUTO_COMMIT = false;
+
+	public static final boolean AUTO_COMMIT = true;
+
+	/**
+	 * 	开始数据库事务： 取消默认提交
+	 * @param connection 正在使用中的Connection
+	 */
+	public static void beginTransaction(Connection connection) {
+		if(connection != null) {
+			try {
+				connection.setAutoCommit(NOT_AUTO_COMMIT);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * 提交事务
+	 * @param connection 正在使用中的Connection
+	 */
+	public static void commit(Connection connection) {
+		if(connection != null) {
+			try {
+				connection.commit();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * 回滚事务
+	 * @param connection 正在使用中的Connection
+	 */ 
+	public static void rollback(Connection connection) {
+		if(connection != null) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
 	/**
 	 * 根据之前获取Connection的方法抽取出的一个工具类，但是仅仅只是第一个版本，
 	 * 随着后面学习新的知识例如数据库连接池等，会对其进行不断地迭代更新。
@@ -73,8 +127,8 @@ public class MyJDBCTools {
 		}		
 		return connection;
 	}
-	
-	
+
+
 	private static DataSource dataSource = null;
 	/**
 	 * 数据库连接池应只被初始化一次. 
@@ -82,7 +136,7 @@ public class MyJDBCTools {
 	static{
 		dataSource = new ComboPooledDataSource("c3p0_prop");
 	}
-	
+
 	/**
 	 * 通过C3P0数据库连接池获取Connection对象
 	 * @return 一个Connection对象
@@ -91,7 +145,7 @@ public class MyJDBCTools {
 	public static Connection getConnection() throws Exception {
 		return dataSource.getConnection();
 	}
-	
+
 	/**
 	 * 释放数据库连接时的ResultSet， PreparedStatement和Connection
 	 * 
@@ -141,5 +195,5 @@ public class MyJDBCTools {
 	public static void releaseDB(Connection connection) {
 		releaseDB(null, null, connection);
 	}
-	
+
 }
