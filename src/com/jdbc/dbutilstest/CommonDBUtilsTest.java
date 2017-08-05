@@ -1,10 +1,18 @@
 package com.jdbc.dbutilstest;
 
+import java.security.Signer;
 import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapHandler;
 import org.junit.Test;
 
+import com.jdbc.common.Singer;
 import com.jdbc.mytools.MyJDBCTools;
 
 /**
@@ -46,21 +54,47 @@ import com.jdbc.mytools.MyJDBCTools;
  * @date 2017年8月5日 下午10:58:49
  */
 public class CommonDBUtilsTest {
-	
+
 	/**
 	 * 使用QueryRunner测试数据库更新（update）操作。
 	 */
 	@Test
 	public void testQueryRunnerUpdate() {
 		Connection connection = null;
-		
+
 		String sql = "DELETE FROM singer WHERE id >= ?";
 		try {
 			connection = MyJDBCTools.getConnection();
-			
+
 			QueryRunner qr = new QueryRunner();
-			
+
 			qr.update(connection, sql, 9);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
+	}
+
+	/**
+	 * 使用QueryRunner和BeanHandle测试数据库查询（select）操作。
+	 */
+	@Test
+	public void testQueryRunnerSelectWithBeanHandle() {
+		Connection connection = null;
+
+		String sql = "SELECT id, name, bestsong "
+					+ "	FROM singer WHERE id = ?";
+		try {
+			connection = MyJDBCTools.getConnection();
+
+			QueryRunner qr = new QueryRunner();
+			ResultSetHandler<Singer> beanHandle = new BeanHandler<>(Singer.class);
+
+			Singer singer = qr.query(connection, sql, beanHandle, 2);
+
+			System.out.println(singer);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,23 +102,61 @@ public class CommonDBUtilsTest {
 			MyJDBCTools.releaseDB(connection);
 		}
 	}
-	
+
+	/**
+	 * 使用QueryRunner和BeanListHandle测试数据库查询（select）操作。
+	 */
 	@Test
-	public void testQueryRunnerSelectWithBeanHandle() {
-		
+	public void testQueryRunnerSelectWithBeanListHandle() {
+		Connection connection = null;
+
+		String sql = "SELECT id, name, bestsong "
+					+ "	FROM singer ";
+		try {
+			connection = MyJDBCTools.getConnection();
+
+			QueryRunner qr = new QueryRunner();
+			ResultSetHandler<List<Singer>> beanListHandle = new BeanListHandler<>(Singer.class);
+
+			List<Singer> singers = qr.query(connection, sql, beanListHandle);
+
+			System.out.println(singers);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
+	}
+
+	/**
+	 *  使用QueryRunner和MapHandle测试数据库查询（select）操作。
+	 */
+	@Test
+	public void testQueryRunnerSelectWithMapHandle() {
+		Connection connection = null;
+
+		String sql = "SELECT id, name, bestsong "
+					+ "	FROM singer WHERE id = ?";
+		try {
+			connection = MyJDBCTools.getConnection();
+
+			QueryRunner qr = new QueryRunner();
+			ResultSetHandler<Map<String, Object>> beanHandle = new MapHandler();
+
+			Map<String, Object> map = qr.query(connection, sql, beanHandle, 2);
+
+			System.out.println(map);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyJDBCTools.releaseDB(connection);
+		}
+
 	}
 
 	@Test
-	public void testQueryRunnerSelectWithBeanListHandle() {
-		
-	}
-	
-	@Test
-	public void testQueryRunnerSelectWithMapHandle() {
-		
-	}
-	
-	@Test
 	public void testQueryRunnerSelectWithMapListHandle() {}
-	
+
 }
