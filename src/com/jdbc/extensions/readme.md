@@ -1,3 +1,4 @@
+其中只有一个类[CommonUpdateBlob.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/extensions/CommonUpdateBlob.java)，用来读写数据库（这里使用的是MySQL）中的Blob类型，也就是二进制大对象类型文件（一般存储长文本或者图片）。  
 # 在数据库中读写Blob类型的数据
 MySQL中，BLOB是一个二进制大型对象，是一个可以存储大量数据的容器，它能容纳不同大小的数据。  
 MySQL的四种BLOB类型(除了在存储的最大信息量上不同外，他们是等同的)  
