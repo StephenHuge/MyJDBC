@@ -1,3 +1,7 @@
+其中主要的类是[CommonConnectionPool.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/connectionpool/CommonConnectionPool.java)，其中提到了两种常见的数据库连接池实现：DBCP数据库连接池和C3P0数据库连接池。  
+包内还有一个它的测试类[TestConnectionPool.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/connectionpool/TestConnectionPool.java)。
+
+
 # JDBC数据库连接池的必要性 
 
 在使用开发基于数据库的web程序时，传统的模式基本是按以下步骤：　　  

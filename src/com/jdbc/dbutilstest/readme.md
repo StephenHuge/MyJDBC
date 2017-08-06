@@ -1,3 +1,5 @@
+包内只有一个类[CommonDBUtilsTest.java](https://github.com/StephenHuge/MyJDBCReWrite/blob/master/src/com/jdbc/connectionpool/CommonDBUtilsTest.java)，其中用到了`QueryRunner` 类和`ResultSetHandle` 接口的几个实现类。
+
 # Apache—DBUtils简介
 `commons-dbutils`  是 Apache 组织提供的一个开源 JDBC工具类库，它是对JDBC的简单封装，学习成本极低，并且使用dbutils能极大简化jdbc编码的工作量，同时也不会影响程序的性能。  
 API介绍：  
