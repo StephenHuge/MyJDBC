@@ -1,9 +1,6 @@
 package com.jdbc.dbutilstest;
 
-import java.io.IOException;
-import java.security.Signer;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -203,9 +200,9 @@ public class CommonDBUtilsTest {
 			connection = MyJDBCTools.getConnection();
 
 			QueryRunner qr = new QueryRunner();
-			ResultSetHandler<Object> scalarHandle = new ScalarHandler();
+			ResultSetHandler<Object> scalarHandler = new ScalarHandler();
 
-			Object name = qr.query(connection, sql, new ScalarHandler(), 3);
+			Object name = qr.query(connection, sql, scalarHandler, 3);
 
 			System.out.println(name);
 			
