@@ -60,6 +60,7 @@ public class CommonUpdateBlob {
 			//此处返回的是一个byte[]型的对象，通过使用输出流读取它，将它转化为一个png格式的图片。
 			byte[] pic =  (byte[]) qr.query(connection, sql, rsh, "Jolin Cai");
 			
+			@SuppressWarnings("resource")
 			OutputStream out = new FileOutputStream("蔡依林.png");
 			
 			System.out.println(pic.length);

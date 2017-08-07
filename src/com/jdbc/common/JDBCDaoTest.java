@@ -1,11 +1,8 @@
 package com.jdbc.common;
 
-import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class JDBCDaoTest {
@@ -33,6 +30,7 @@ public class JDBCDaoTest {
 		System.out.println(singer);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testGetByReflectionWithoutList() {
 		String sql = "SELECT id, name, bestsong bestSong"
