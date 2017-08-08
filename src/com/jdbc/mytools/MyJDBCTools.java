@@ -19,24 +19,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @date 2017年8月2日
  *
  */
-/**
- * 
- * @author Administrator
- * 
- * @date 2017年8月6日 上午12:08:27
- */
-/**
- * 
- * @author Administrator
- * 
- * @date 2017年8月6日 上午12:08:29
- */
-/**
- * 
- * @author Administrator
- * 
- * @date 2017年8月6日 上午1:22:00
- */
+
 public class MyJDBCTools {
 
 	public static final boolean NOT_AUTO_COMMIT = false;
