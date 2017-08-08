@@ -16,7 +16,7 @@
 顺序是按照学习先后顺序，这只是一个简陋的不成形的代码的集合，仅作为自己知识的记录。  
 
 在数据库中创建的`schema` 为：`myjdbcrewrite` ，其中有两个`table` ：`user` 和`singer` 。  
-table `user` :  
+table `user` ：  
 
 <table>
         <tr>
@@ -41,7 +41,7 @@ table `user` :
         </tr>
 </table>
 
-table `singer` :  
+table `singer` ：  
 
 
 <table>
@@ -71,5 +71,9 @@ table `singer` :
         </tr>
     </table>
 
+table `batch`：  
 
-
+id | user | password 	  
+--- | --- |---  
+1 |user_1|password_1
+...|...|...|
