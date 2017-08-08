@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 
-import com.jdbc.mytools.MyJDBCTools;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**

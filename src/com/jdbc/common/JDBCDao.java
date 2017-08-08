@@ -290,6 +290,7 @@ public class JDBCDao {
 	 * @param args
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static <E> E getForField(String sql, Object... args) {
 		
 		Connection connection = null;

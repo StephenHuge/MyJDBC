@@ -1,7 +1,5 @@
 package com.jdbc.connectionpool;
 
-import static org.junit.Assert.*;
-
 import java.sql.Connection;
 
 import org.junit.After;

@@ -2,11 +2,9 @@ package com.jdbc.transaction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.junit.Test;
 
-import com.jdbc.common.CommonJDBC;
 import com.jdbc.mytools.MyJDBCTools;
 
 /**
@@ -30,7 +28,6 @@ public class CommonTransaction {
 	public void myTransaction() {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		String sql = "INSERT singer(name, bestsong) "
 				+ "VALUES(?, ?)";
