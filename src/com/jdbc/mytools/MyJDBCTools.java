@@ -161,7 +161,7 @@ public class MyJDBCTools {
 	}
 	/**
 	 * 释放数据库连接时的 PreparedStatement和Connection，其具体实现是
-	 * {@code releaseDB(ResultSet rs, PreparedStatement ps, Connection connection)}
+	 * {@link #releaseDB(ResultSet rs, PreparedStatement ps, Connection connection)}
 	 * 
 	 * @param ps 数据库连接时的PreparedStatement
 	 * @param connection 数据库连接时的Connection
@@ -171,7 +171,7 @@ public class MyJDBCTools {
 	}
 	/**
 	 * 释放数据库连接时的 Connection，其具体实现是
-	 * {@code releaseDB(ResultSet rs, PreparedStatement ps, Connection connection)}
+	 * {@link #releaseDB(ResultSet rs, PreparedStatement ps, Connection connection)}
 	 * 
 	 * @param connection 数据库连接时的Connection
 	 */	
