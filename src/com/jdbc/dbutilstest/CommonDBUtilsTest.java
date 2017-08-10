@@ -196,7 +196,7 @@ public class CommonDBUtilsTest {
 	 * ScalarHandler: 可以返回指定列的一个值或返回一个统计函数的值。
 	 */
 	@Test
-	public void testQueryRunnerWithScalarHandle() {
+	public void testQueryRunnerSelectWithScalarHandle() {
 		Connection connection = null;
 
 		String sql = "SELECT name"
