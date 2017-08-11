@@ -78,7 +78,6 @@ public class JDBCDao {
 		String sql = "INSERT INTO singer(name, bestsong) "
 				+ "VALUES(?, ?)";
 		update(sql, singer.getName(), singer.getBestSong());
-
 	}
 
 	/**
@@ -184,7 +183,6 @@ public class JDBCDao {
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-
 		return entity;
 	}
 
@@ -317,7 +315,6 @@ public class JDBCDao {
 		} finally{
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-
 		return null;
 	}
 }
