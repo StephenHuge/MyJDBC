@@ -127,8 +127,8 @@ public class CommonJDBC {
 
 	/**
 	 * PreparedStatement从字面意思就能看出来，它在执行SQL语句时会先传入SQL语句并预先编译，
-	 * 跟Statement相比，它除了可以预先编译，在多次执行SQL语句时提高效率，而且它可以有效防止SQL注入。
-	 * 详细信息可以参见{@code testSQLInjection}
+	 * 跟Statement相比，它除了可以预先编译，在多次执行SQL语句时提高效率，而且它可以有效防止SQL注入，
+	 * 详细信息可以参见{@code testSQLInjection}。
 	 * 当PreparedStatement执行修改操作时(调用{@code PreparedStatement #excuteUpdate()})，
 	 * 其返回值是一个int型变量，此时不会产生结果集。
 	 */
@@ -157,7 +157,7 @@ public class CommonJDBC {
 
 
 	/**
-	 * 结果是"登陆成功！"。
+	 * 测试SQL注入。执行结果是"登陆成功！"。
 	 * 如果采用简单的拼接方式拼接SQL语句，则可能会导致SQL被注入。
 	 */
 	@Test
@@ -202,7 +202,7 @@ public class CommonJDBC {
 	}
 
 	/**
-	 * 使用 PreparedStatement 后注入失败，有效的解决了 SQL 注入问题.
+	 * 使用 PreparedStatement 后SQL注入失败，有效的解决了 SQL 注入问题.
 	 */
 	@Test
 	public void testSQLInjectionWithPS() {
