@@ -1,7 +1,7 @@
 其中只有一个类[CommonTransaction.java](https://github.com/StephenHuge/MyJDBCReWrite/tree/master/src/com/jdbc/transaction/CommonTransaction.java)，用来简单的定义了一下JDBC中的事务。  
 
 数据库事务是一个比较重要的概念。  
-其实在纯JDBC中，事务用到的可能不是很多，更多的是理解它的概念。但是随着学习的深入，在接触到Hibernate等ORM框架后，事务的概念相当重要，所以在这个包中，会按照教程和自己的理解写一写小的测试类，但是主要还是概念的理解。
+其实在纯JDBC中，事务用到的可能不是很多，更多的是理解它的概念。但是随着学习的深入，在接触到Hibernate等ORM框架后，事务的概念相当重要，所以主要还是在概念上多理解。
 
 # 数据库事务的概念
 在数据库中,所谓事务是指一组逻辑操作单元,使数据从一种状态变换到另一种状态。  

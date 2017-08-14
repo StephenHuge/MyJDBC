@@ -11,10 +11,10 @@ import com.jdbc.mytools.MyJDBCTools;
  * 关于事务: 
  * 1. 如果多个操作中每个操作使用的是自己的单独的连接, 则无法保证事务，即必须使用同一个connection； 
  * 2. 具体步骤: 
- * 		1). 事务操作开始前, 开始事务:取消 Connection 的默认提交行为； 
+ *  	1). 事务操作开始前, 开始事务:取消 Connection 的默认提交行为； 
  *  	2). 如果事务的操作都成功,则提交事务；
  *  	3). 回滚事务: 若出现异常, 则在 catch 块中回滚事务。
- *  3. 测试事务的隔离级别 在 JDBC 程序中可以通过 Connection 的 setTransactionIsolation 来设置事务的隔离级别。
+ * 3. 测试事务的隔离级别 在 JDBC 程序中可以通过 Connection 的 setTransactionIsolation 来设置事务的隔离级别。
  * @author Administrator
  * 
  * @date 2017年8月5日 下午5:44:29
@@ -34,7 +34,7 @@ public class CommonTransaction {
 		try {
 			connection = MyJDBCTools.getConnection();
 
-			MyJDBCTools.beginTransaction(connection);	// 开始事务
+			MyJDBCTools.beginTransaction(connection);	// 开启事务
 
 			ps = connection.prepareStatement(sql);
 
@@ -51,7 +51,7 @@ public class CommonTransaction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			MyJDBCTools.rollback(connection);	// 回滚事务
+			MyJDBCTools.rollback(connection);	// 发生异常则回滚事务
 			
 		} finally {
 			MyJDBCTools.releaseDB(ps, connection);
