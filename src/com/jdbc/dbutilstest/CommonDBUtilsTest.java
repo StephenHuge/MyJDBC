@@ -38,23 +38,25 @@ import com.jdbc.mytools.MyJDBCTools;
  * 而没有必要的。
  * 
  * 对于更新操作（update），我们在得到Connection之后，其实只需要把它和SQL语句中的占位符传进一个方法，让它执行，如果出错就抛出异
- * 常就可以了，这其实就是{@code QueryRunner}中的{# update(Connection conn, String sql, Object... params)}
- * 方法；
+ * 常就可以了，这其实就是{@code QueryRunner}中的
+ * {@link QueryRunner #update(Connection conn, String sql, Object... params)}方法；
  * 
- * 相对于查询(select)方法，情况会稍微复杂一点，但也完全在理解范围之内。我们会同时用到{@code QueryRunner}类和
- * {@code ResultSetHandle}接口，具体方法是调用
+ * 相对于查询(select)方法，情况会稍微复杂一点，因为查询需要返回查询结果（例如JDBC中是一个ResultSet），但也完全在理解范围之内。
+ * 我们会同时用到{@code QueryRunner}类和{@code ResultSetHandle}接口，具体方法是调用
  * {@code link QueryRunner #query(Connection conn, String sql, ResultSetHandler<T> rsh,Object... params)}，
- * 传入的参数就是一个 ResultSetHandle实现类，其实现类会对ResutSet对象进行读取和"加工"。
+ * 传入的参数就是一个 ResultSetHandle实现类，不同的实现类会对ResutSet对象进行不同方法的"加工"操作。
  * 
- * 由于大部分时候，对数据"加工"的方式会很固定，所以ResultSetHandle的实现类一般功能会很固定。而之前在方法
- * {@code com.jdbc.common.JDBCDao# getByReflection(Class<T>, String, Object...)}中，我们将ResultSet
- * 对象中的值经过反射变成了一个T类型的对象，在{# getForList(Class<T> clazz, String sql, Object... args)}方法中，
- * 将ResutSet对象中的值经过反射变成了一个成员类型为T的List对象。其实这两个方法对应的就是ResultSetHandle接口的实现类
- * {@code BeanHandle}和{@code BeanListHandle}。
+ * 由于大部分时候，对数据"加工"的方式就那么几种，比较固定，所以DBUtils包中为我们提供了几个默认的的ResultSetHandle的实现类。
+ * 
+ * 我们记得，之前在方法{@code com.jdbc.common.JDBCDao# getByReflection(Class<T>, String, Object...)}
+ * 中，我们将ResultSet对象中的值经过反射变成了一个T类型的对象，在
+ * {code JDBCDao#getForList(Class<T> clazz, String sql, Object... args)}方法中，将ResutSet对象中的值
+ * 经过反射变成了一个成员类型为T的List对象。
+ * 事实上，这两个方法有默认的实现，分别对应的是ResultSetHandle接口的实现类{@code BeanHandle}和{@code BeanListHandle}。
  * 
  * 其它的实现类还有很多，例如{@code ArrayHandler}、{@code MapHandler}以及它们对应的集合类等。
  * 
- * 综上所述，这个类的出现是为了简化JDBC对数据库的操作流程，我们之前已经自己实现过类似的功能，在此只需要知道其常见使用方法即可。
+ * 综上所述，这个类的出现是为了简化JDBC对数据库的操作流程，我们之前已经自己实现过类似的功能，在此知道其常见使用方法即可。
  * 
  * @author Administrator
  * 
