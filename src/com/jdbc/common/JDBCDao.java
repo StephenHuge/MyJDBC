@@ -78,7 +78,6 @@ public class JDBCDao {
 		String sql = "INSERT INTO singer(name, bestsong) "
 				+ "VALUES(?, ?)";
 		update(sql, singer.getName(), singer.getBestSong());
-
 	}
 
 	/**
@@ -89,6 +88,7 @@ public class JDBCDao {
 	 * @param sql 一般是带占位符的SQL语句
 	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
 	 * @return 返回获取的对象，在此处为Singer对象
+	 * @deprecated 由于使用反射适用范围更广，此方法弃用，参见{@link #getByReflection}
 	 */
 	@Deprecated
 	public static Object getByConstructor(String sql, Object... args) {
@@ -121,9 +121,6 @@ public class JDBCDao {
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-
-
-
 		return null;
 	}
 
@@ -138,6 +135,8 @@ public class JDBCDao {
 	 * @param sql 一般是带占位符的SQL语句
 	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
 	 * @return 一个传入类型的实例
+	 * @deprecated 直接使用反射创建对象，由于代码重构，我们直接调用了{@link #getForList}
+	 * 			       方法实现该方法 ，参见{@link #getByReflection}
 	 */
 	@Deprecated
 	public static <T> T getByReflectionWithoutList(Class<T> clazz, String sql, Object... args) {
@@ -159,7 +158,7 @@ public class JDBCDao {
 			rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 
-			Map<String, Object> map = new HashMap<>();
+			Map<String, Object> map = new HashMap<>();	//使用HashMap装取属性和值对应的键值对
 
 			if(rs.next()) {
 				for (int j = 0; j < rsmd.getColumnCount(); j++) {
@@ -184,7 +183,6 @@ public class JDBCDao {
 		} finally {
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-
 		return entity;
 	}
 
@@ -207,7 +205,9 @@ public class JDBCDao {
 
 	/**
 	 * 将数据库中的多条记录转为多个对象，并使用一个装着多个不同类实例的List返回。其实现是复杂版的
-	 * {@code getByReflectionWithoutList()}。
+	 * {@link #getByReflectionWithoutList()}。
+	 * 在代码重构中，将 把结果集转化为List这一逻辑抽取成了一个私有方法
+	 * {@link #transferResultSetToBeanList}。
 	 * 
 	 * @param clazz 需要创建类的类型
 	 * @param sql 一般是带占位符的SQL语句
@@ -256,7 +256,7 @@ public class JDBCDao {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		List<T> list = new ArrayList<>();
 		
-		 do {
+		while(rs.next()) {
 			Map<String, Object> map = new HashMap<>();
 
 			for (int j = 0; j < rsmd.getColumnCount(); j++) {
@@ -277,18 +277,17 @@ public class JDBCDao {
 				}
 				list.add(instance);
 			}
-
-		} while(rs.next());
-		 
+		}
 		return list;
 	}
 
 	/**
 	 * 返回某条记录的某一个字段的值 或 一个统计的值(一共有多少条记录等)，
 	 * 一般得到的结果集应该只有一行, 且只有一列
-	 * @param sql
-	 * @param args
-	 * @return
+	 * 
+	 * @param sql 一般是带占位符的SQL语句
+	 * @param args 可变参数的数组，用来填充SQL语句中的占位符
+	 * @return 获取到的某条记录的某个具体的属性
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E> E getForField(String sql, Object... args) {
@@ -316,9 +315,6 @@ public class JDBCDao {
 		} finally{
 			MyJDBCTools.releaseDB(rs, ps, connection);
 		}
-
 		return null;
-
-
 	}
 }
