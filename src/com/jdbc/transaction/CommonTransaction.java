@@ -48,7 +48,6 @@ public class CommonTransaction {
 
 			MyJDBCTools.commit(connection);// 提交事务
 
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			MyJDBCTools.rollback(connection);	// 发生异常则回滚事务
@@ -56,8 +55,5 @@ public class CommonTransaction {
 		} finally {
 			MyJDBCTools.releaseDB(ps, connection);
 		}
-
 	}
-
-
 }
