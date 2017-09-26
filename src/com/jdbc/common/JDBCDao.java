@@ -253,15 +253,15 @@ public class JDBCDao {
 	private static <T> List<T> transferResultSetToBeanList(Class<T> clazz, ResultSet rs)
 			throws Exception {
 		
-		ResultSetMetaData rsmd = rs.getMetaData();
+		ResultSetMetaData rsmd = rs.getMetaData();	//获取表中列的名字
 		List<T> list = new ArrayList<>();
 		
 		do {
 			Map<String, Object> map = new HashMap<>();
 
 			// 获取查询结果
-			for (int j = 0; j < rsmd.getColumnCount(); j++) {
-				String label = rsmd.getColumnLabel(j + 1);
+			for (int j = 0; j < rsmd.getColumnCount(); j++) {	// 表的列数
+				String label = rsmd.getColumnLabel(j + 1);	// 表每一列的名字
 				Object value = rs.getObject(label);
 
 				map.put(label, value);
