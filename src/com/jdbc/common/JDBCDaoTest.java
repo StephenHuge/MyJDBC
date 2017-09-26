@@ -23,9 +23,9 @@ public class JDBCDaoTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testGetByConstructor() {
-		String sql = "SELECT id, name, bestsong "
+		String sql = "SELECT distinct id, name, bestsong "
 				+ "	FROM singer WHERE bestsong = ?";
-		Singer singer = (Singer) JDBCDao.getByConstructor(sql, "美人鱼");
+		Singer singer = (Singer) JDBCDao.getByConstructor(sql, "十年");
 		
 		System.out.println(singer);
 	}
@@ -51,7 +51,7 @@ public class JDBCDaoTest {
 
 	@Test
 	public void testGetForList() {
-		String sql = "SELECT id, name, bestsong bestSong"
+		String sql = "SELECT distinct id, name, bestsong bestSong"
 				+ "	FROM singer WHERE id > ?";
 		List<Singer> singers = JDBCDao.getForList(Singer.class, sql, 1);
 		

@@ -53,7 +53,8 @@ public class JDBCDao {
 			ps = connection.prepareStatement(sql);
 
 			for (int i = 0; i < args.length; i++) {
-				ps.setObject(i + 1, args[i]);	//遍历args占位符数组，为每个占位符赋值，占位符位置初始值为1
+				//遍历args占位符数组，为每个占位符赋值，占位符位置初始值为1
+				ps.setObject(i + 1, args[i]);	
 			}
 
 			ps.executeUpdate();
@@ -72,8 +73,8 @@ public class JDBCDao {
 	 * @param singer 传入的Singer对象
 	 */
 	public static void write(Singer singer) {
-		if(singer == null) {
-			throw new NullPointerException("Singer对象不能为空！");
+		if(singer == null || !(singer instanceof Singer)) {
+			throw new NullPointerException("Singer对象输入有误！");
 		}
 		String sql = "INSERT INTO singer(name, bestsong) "
 				+ "VALUES(?, ?)";
@@ -114,8 +115,6 @@ public class JDBCDao {
 
 				return new Singer(id, name, bestSong);
 			}
-			return null;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -187,7 +186,7 @@ public class JDBCDao {
 	}
 
 	/**
-	 * 使用getByForList()进行封装。
+	 * 使用getByForList()实现。
 	 * 
 	 * @param clazz 需要创建类的类型
 	 * @param sql 一般是带占位符的SQL语句
@@ -197,7 +196,8 @@ public class JDBCDao {
 	public static <T> T getByReflection(Class<T> clazz, String sql, Object... args) {
 		
 		List<T> list = getForList(clazz, sql, args);
-		if(list.size() > 0) {
+
+		if(list != null && list.size() > 0) {
 			return list.get(0);
 		}
 		return null;
@@ -256,17 +256,19 @@ public class JDBCDao {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		List<T> list = new ArrayList<>();
 		
-		while(rs.next()) {
+		do {
 			Map<String, Object> map = new HashMap<>();
 
+			// 获取查询结果
 			for (int j = 0; j < rsmd.getColumnCount(); j++) {
 				String label = rsmd.getColumnLabel(j + 1);
 				Object value = rs.getObject(label);
 
 				map.put(label, value);
 			}
-
+			
 			T instance = null;
+			// 生成并添加元素
 			if (map.size() > 0) {
 				instance = clazz.newInstance();
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -275,9 +277,10 @@ public class JDBCDao {
 
 					BeanUtils.setProperty(instance, key, val);
 				}
+
 				list.add(instance);
 			}
-		}
+		} while (rs.next());
 		return list;
 	}
 
